@@ -1,12 +1,12 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute, RouterOutlet} from '@angular/router';
+import {ActivatedRoute} from '@angular/router';
 import {ToolbarComponent} from './components/toolbar/toolbar.component';
 import {TrackerService} from './services/tracker.service';
 import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, ToolbarComponent, TrackerService],
+  imports: [ToolbarComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })

@@ -5,7 +5,7 @@ import {TrackerService} from '../../services/tracker.service';
 
 @Component({
   selector: 'app-tracking-button',
-  imports: [MatButtonModule, MatIconModule, TrackerService],
+  imports: [MatButtonModule, MatIconModule],
   templateUrl: './tracking-button.component.html',
   styleUrl: './tracking-button.component.css'
 })
