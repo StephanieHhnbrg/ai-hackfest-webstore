@@ -1,5 +1,5 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
-import {ActivatedRoute} from '@angular/router';
+import {ActivatedRoute, Router} from '@angular/router';
 import {ToolbarComponent} from './components/toolbar/toolbar.component';
 import {TrackerService} from './services/tracker.service';
 import {Subscription} from 'rxjs';
@@ -14,7 +14,9 @@ export class AppComponent implements OnInit, OnDestroy {
 
   private subscriptions: Subscription[] = [];
 
-  constructor(private tracker: TrackerService, private route: ActivatedRoute) {
+  constructor(private tracker: TrackerService,
+              private router: Router,
+              private route: ActivatedRoute) {
 
   }
 
@@ -26,7 +28,11 @@ export class AppComponent implements OnInit, OnDestroy {
         let campaign = params['utm_campaign'];
         let userId = params['utm_user_id'];
         if(campaign && userId) {
-          this.tracker.recordUtm({campaign, userId})
+          this.tracker.recordUtm({campaign, userId});
+          this.router.navigate([], {
+            queryParams: {},
+            replaceUrl: true
+          });
         }
       }));
   }

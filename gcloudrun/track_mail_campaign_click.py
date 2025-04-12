@@ -16,13 +16,13 @@ def update_tracking_db(request):
   request_json = request.get_json(silent=True)
   request_args = request.args
   user_id = get_field_from_req(request_json, request_args, 'userId')
-  capaign_id = get_field_from_req(request_json, request_args, 'campaign')
+  campaign_id = get_field_from_req(request_json, request_args, 'campaign')
 
 
   db = firestore.Client(database='marketing-campaign')
   db.collection('tracking').add({
     "user_id": user_id,
-    "capaign_id": capaign_id,
+    "campaign_id": campaign_id,
     "event": "email_bttn_clicked",
     "timestamp": firestore.SERVER_TIMESTAMP
   })

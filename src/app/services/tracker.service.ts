@@ -20,7 +20,7 @@ export class TrackerService {
   }
 
   public recordUtm(utm: UtmParameters) {
-    if (utm) { return; }
+    if (this.utm) { return; }
     this.utm = utm;
     let endpoint = environment.utmEndpoint;
     this.callGCloudRun(endpoint, {utm});
@@ -43,7 +43,7 @@ export class TrackerService {
       })
     };
     this.http.post<JSON>(endpoint, JSON.stringify(payload), httpOptions).subscribe({
-      next: (response) => console.log('Success:', response),
+      next: () => {},
       error: (err) => console.error('HTTP error:', err)
     });
   }
