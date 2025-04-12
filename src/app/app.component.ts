@@ -23,12 +23,10 @@ export class AppComponent implements OnInit, OnDestroy {
 
     this.subscriptions.push(this.route.queryParams
       .subscribe(params => {
-        let source = params['utm_source'];
-        let medium = params['utm_medium'];
         let campaign = params['utm_campaign'];
-        let content = params['utm_content'];
-        if(source && medium && campaign && content) {
-          this.tracker.recordUtm({source, medium, campaign, content})
+        let userId = params['utm_user_id'];
+        if(campaign && userId) {
+          this.tracker.recordUtm({campaign, userId})
         }
       }));
   }

@@ -7,21 +7,16 @@ def track_webpage_call(request):
   if request.method == 'OPTIONS':
     return handle_cors()
 
-  update_db()
+  update_tracking_db()
   return create_response()
 
 
-def update_db():
+def update_tracking_db():
   db = firestore.Client(database='marketing-campaign')
-  doc_ref = db.collection('webpage-metrics').document('store')
-  doc = doc_ref.get()
-  if doc.exists:
-    data = doc.to_dict()
-    clicks = data.get('clicks', 0) + 1
-    doc_ref.update({
-      'clicks': clicks
-    })
-
+  db.collection('tracking').add({
+    "event": "webpage_call",
+    "timestamp": firestore.SERVER_TIMESTAMP
+  })
 
 def handle_cors():
   response = make_response()

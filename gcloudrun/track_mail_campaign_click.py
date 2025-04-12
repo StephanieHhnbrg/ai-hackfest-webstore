@@ -7,32 +7,25 @@ def track_mail_campaign_click(request):
   if request.method == 'OPTIONS':
     return handle_cors()
 
-  request_json = request.get_json(silent=True)
-  request_args = request.args
-  if is_marketing_campaign(request_json, request_args):
-    update_campaign_metrics(request_json, request_args)
+  update_tracking_db(request)
 
   return create_response()
 
 
-def update_campaign_metrics(request_json, request_args):
-  name = get_field_from_req(request_json, request_args, 'campaign')
-  variant = get_field_from_req(request_json, request_args, 'content')
-  id = f"{name}_{variant}"
+def update_tracking_db(request):
+  request_json = request.get_json(silent=True)
+  request_args = request.args
+  user_id = get_field_from_req(request_json, request_args, 'userId')
+  capaign_id = get_field_from_req(request_json, request_args, 'campaign')
+
 
   db = firestore.Client(database='marketing-campaign')
-  doc_ref = db.collection('marketing-campaign').document(id)
-  doc = doc_ref.get()
-  if doc.exists:
-    data = doc.to_dict()
-    clicks = data.get('clicks', 0) + 1
-    doc_ref.update({
-      'clicks': clicks,
-    })
-
-
-def is_marketing_campaign(request_json, request_args):
-  return (request_json and 'campaign' in request_json) or (request_args and 'campaign' in request_args)
+  db.collection('tracking').add({
+    "user_id": user_id,
+    "capaign_id": capaign_id,
+    "event": "email_bttn_clicked",
+    "timestamp": firestore.SERVER_TIMESTAMP
+  })
 
 
 def get_field_from_req(request_json, request_args, field):

@@ -7,54 +7,27 @@ def track_webpage_purchase(request):
   if request.method == 'OPTIONS':
     return handle_cors()
 
-  request_json = request.get_json(silent=True)
-  request_args = request.args
-  if get_time_from_req(request_json, request_args) == 0:
-    return create_response() # if time is not present, purchased is not logged due to falsification of metrics otherwise
-
-  update_webpage_metrics(request_json, request_args)
-  if is_marketing_campaign(request_json, request_args):
-    update_campaign_metrics(request_json, request_args)
+  update_tracking_db(request)
 
   return create_response()
 
 
-def update_campaign_metrics(request_json, request_args):
-  name = get_field_from_req(request_json, request_args, 'campaign')
-  variant = get_field_from_req(request_json, request_args, 'content')
-  id = f"{name}_{variant}"
+def update_tracking_db(request):
+  request_json = request.get_json(silent=True)
+  request_args = request.args
+  user_id = get_field_from_req(request_json, request_args, 'userId')
+  capaign_id = get_field_from_req(request_json, request_args, 'campaign')
+  time = get_time_from_req(request_json, request_args)
+
 
   db = firestore.Client(database='marketing-campaign')
-  doc_ref = db.collection('marketing-campaign').document(id)
-  doc = doc_ref.get()
-
-  if doc.exists:
-    data = doc.to_dict()
-    purchases = data.get('purchases', 0) + 1
-    time = data.get('time', 0) + get_time_from_req(request_json, request_args)
-    doc_ref.update({
-      'purchases': purchases,
-      'time': time
-    })
-
-
-def update_webpage_metrics(request_json, request_args):
-  db = firestore.Client(database='marketing-campaign')
-  doc_ref = db.collection('webpage-metrics').document('store')
-  doc = doc_ref.get()
-
-  if doc.exists:
-    data = doc.to_dict()
-    purchases = data.get('purchases', 0) + 1
-    time = data.get('time', 0) + get_time_from_req(request_json, request_args)
-    doc_ref.update({
-      'purchases': purchases,
-      'time': time
-    })
-
-
-def is_marketing_campaign(request_json, request_args):
-  return (request_json and 'campaign' in request_json) or (request_args and 'campaign' in request_args)
+  db.collection('tracking').add({
+    "user_id": user_id,
+    "capaign_id": capaign_id,
+    "time": time,
+    "event": "purchases_completed",
+    "timestamp": firestore.SERVER_TIMESTAMP
+  })
 
 
 def get_field_from_req(request_json, request_args, field):
