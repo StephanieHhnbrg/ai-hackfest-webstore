@@ -28,7 +28,9 @@ jobs:
         run: |
           rm -r ./docs
           npm run build-prod
-          cp -r "./dist/browser/" "./docs"
+          cp -r "./dist/ai-hackfest-webstore/browser/" "./docs"
+          cp "./dist/ai-hackfest-webstore/prerendered-routes.json" "./docs"
+          cp "./dist/ai-hackfest-webstore/3rdpartylicenses.txt" "./docs"
           cp "./docs/index.html" "./docs/404.html"
 
       - name: 🎉 Commit & Push
