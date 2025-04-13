@@ -1,0 +1,25 @@
+<div class="frame">
+  <div class="banner">
+    <h1><span>Breathe beauty in every bloom</span></h1>
+    <h2><span>Spring Blossom Collection — Celebrate the season with handpicked floral arrangements. <br /> Let nature’s grace brighten every moment. 🌸</span></h2>
+  </div>
+
+  <div class="arrivals">
+    <h4>New Arrivals ({{data.length}})</h4>
+    <div class="row">
+      <div *ngFor="let item of data">
+        <mat-card appearance="outlined">
+          <mat-card-header>
+            <mat-card-title>{{item.name}}</mat-card-title>
+            <mat-card-subtitle>{{item.subtitle}}</mat-card-subtitle>
+          </mat-card-header>
+          <img mat-card-image [src]="item.imgUrl">
+          <mat-card-content>
+            <small>{{item.desc}}</small>
+          </mat-card-content>
+        </mat-card>
+      </div>
+    </div>
+  </div>
+
+</div>

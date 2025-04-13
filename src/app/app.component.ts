@@ -3,10 +3,11 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {ToolbarComponent} from './components/toolbar/toolbar.component';
 import {TrackerService} from './services/tracker.service';
 import {Subscription} from 'rxjs';
+import {MockStoreComponent} from './components/mock-store/mock-store.component';
 
 @Component({
   selector: 'app-root',
-  imports: [ToolbarComponent],
+  imports: [ToolbarComponent, MockStoreComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css'
 })
