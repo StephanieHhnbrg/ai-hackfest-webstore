@@ -5,11 +5,11 @@ from google.cloud import firestore
 @functions_framework.http
 def track_mail_campaign_click(request):
   if request.method == 'OPTIONS':
-    return handle_cors()
+    return handle_cors(request)
 
   update_tracking_db(request)
 
-  return create_response()
+  return create_response({}, request)
 
 
 def update_tracking_db(request):
@@ -43,19 +43,21 @@ ALLOWED_ORIGINS = [
 ]
 
 
-def handle_cors():
+def handle_cors(request):
   response = make_response()
   response.status_code = 204
-  for origin in ALLOWED_ORIGINS:
+  origin = request.headers.get('Origin')
+  if origin in ALLOWED_ORIGINS:
     response.headers['Access-Control-Allow-Origin'] = origin
   response.headers['Access-Control-Allow-Methods'] = 'POST, OPTIONS'
   response.headers['Access-Control-Allow-Headers'] = 'Content-Type, Authorization'
   return response
 
 
-def create_response(data):
+def create_response(data, request):
   response = make_response(jsonify(data))
   response.status_code = 200
-  for origin in ALLOWED_ORIGINS:
+  origin = request.headers.get('Origin')
+  if origin in ALLOWED_ORIGINS:
     response.headers['Access-Control-Allow-Origin'] = origin
   return response
