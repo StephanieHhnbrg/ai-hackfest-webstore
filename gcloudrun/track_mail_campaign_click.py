@@ -15,8 +15,8 @@ def track_mail_campaign_click(request):
 def update_tracking_db(request):
   request_json = request.get_json(silent=True)
   request_args = request.args
-  user_id = get_field_from_req(request_json, request_args, 'userId')
-  campaign_id = get_field_from_req(request_json, request_args, 'campaign')
+  user_id = get_utm_field_from_req(request_json, request_args, 'userId')
+  campaign_id = get_utm_field_from_req(request_json, request_args, 'campaign')
 
 
   db = firestore.Client(database='marketing-campaign')
@@ -28,11 +28,11 @@ def update_tracking_db(request):
   })
 
 
-def get_field_from_req(request_json, request_args, field):
-  if request_json and field in request_json:
-    return request_json[field]
-  elif request_args and field in request_args:
-    return request_args[field]
+def get_utm_field_from_req(request_json, request_args, field):
+  if request_json and 'utm' in request_json:
+    return request_json['utm'][field]
+  elif request_args  and 'utm' in request_args:
+    return request_args['utm'][field]
   else:
     return ""
 
